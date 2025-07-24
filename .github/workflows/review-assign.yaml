@@ -5,10 +5,7 @@ on:
     types: [ opened, ready_for_review ]
 
 env:
-  REVIEWERS:
-    - trm11tkr
-    - takashi0602
-    - mqkotoo
+  REVIEWERS: 'trm11tkr, takashi0602, mqkotoo'
 
 jobs:
   assign:
