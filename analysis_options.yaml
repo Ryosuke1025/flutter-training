@@ -1,1 +1,5 @@
 include: package:yumemi_lints/flutter/3.32/recommended.yaml
+analyzer:
+  errors:
+    sort_constructors_first: ignore
+    diagnostic_describe_all_properties: ignore
