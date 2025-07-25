@@ -15,8 +15,22 @@ class WeatherWidget extends StatelessWidget {
           _buildSquarePlaceholderWidget(),
           Row(
             children: [
-              _buildMinTemperatureWidget(context),
-              _buildMaxTemperatureWidget(context),
+              Expanded(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: _buildMinTemperatureWidget(context),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: _buildMaxTemperatureWidget(context),
+                  ),
+                ),
+              ),
             ],
           ),
           Expanded(
@@ -25,8 +39,12 @@ class WeatherWidget extends StatelessWidget {
                 const SizedBox(height: 80),
                 Row(
                   children: [
-                    _buildCloseButtonWidget(),
-                    _buildReloadButtonWidget(),
+                    Expanded(
+                      child: _buildCloseButtonWidget(),
+                    ),
+                    Expanded(
+                      child: _buildReloadButtonWidget(),
+                    ),
                   ],
                 ),
               ],
@@ -45,27 +63,11 @@ class WeatherWidget extends StatelessWidget {
   }
 
   Widget _buildMinTemperatureWidget(BuildContext context) {
-    return Expanded(
-      child: Center(
-        child: _buildTemperatureWidget(
-          context,
-          text: '** ℃',
-          color: Colors.blue,
-        ),
-      ),
-    );
+    return _buildTemperatureWidget(context, text: '** ℃', color: Colors.blue);
   }
 
   Widget _buildMaxTemperatureWidget(BuildContext context) {
-    return Expanded(
-      child: Center(
-        child: _buildTemperatureWidget(
-          context,
-          text: '** ℃',
-          color: Colors.red,
-        ),
-      ),
-    );
+    return _buildTemperatureWidget(context, text: '** ℃', color: Colors.red);
   }
 
   Widget _buildTemperatureWidget(
@@ -74,42 +76,28 @@ class WeatherWidget extends StatelessWidget {
     required Color color,
   }) {
     final baseStyle = Theme.of(context).textTheme.labelLarge;
-    return Expanded(
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          child: Text(
-            text,
-            style: baseStyle?.copyWith(color: color),
-          ),
-        ),
-      ),
-    );
+    return Text(text, style: baseStyle?.copyWith(color: color));
   }
 
   Widget _buildCloseButtonWidget() {
-    return Expanded(
-      child: TextButton(
-        onPressed: _onPressedCloseButton,
-        child: const Text(
-          'Close',
-          style: TextStyle(
-            color: Colors.blue,
-          ),
+    return TextButton(
+      onPressed: _onPressedCloseButton,
+      child: const Text(
+        'Close',
+        style: TextStyle(
+          color: Colors.blue,
         ),
       ),
     );
   }
 
   Widget _buildReloadButtonWidget() {
-    return Expanded(
-      child: TextButton(
-        onPressed: _onPressedReloadButton,
-        child: const Text(
-          'Reload',
-          style: TextStyle(
-            color: Colors.blue,
-          ),
+    return TextButton(
+      onPressed: _onPressedReloadButton,
+      child: const Text(
+        'Reload',
+        style: TextStyle(
+          color: Colors.blue,
         ),
       ),
     );
