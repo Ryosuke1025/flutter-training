@@ -82,24 +82,16 @@ class WeatherWidget extends StatelessWidget {
   Widget _buildCloseButtonWidget() {
     return TextButton(
       onPressed: _onPressedCloseButton,
-      child: const Text(
-        'Close',
-        style: TextStyle(
-          color: Colors.blue,
-        ),
-      ),
+      style: TextButton.styleFrom(foregroundColor: Colors.blue),
+      child: const Text('Close'),
     );
   }
 
   Widget _buildReloadButtonWidget() {
     return TextButton(
       onPressed: _onPressedReloadButton,
-      child: const Text(
-        'Reload',
-        style: TextStyle(
-          color: Colors.blue,
-        ),
-      ),
+      style: TextButton.styleFrom(foregroundColor: Colors.blue),
+      child: const Text('Reload'),
     );
   }
 
