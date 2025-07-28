@@ -9,7 +9,6 @@ class WeatherWidget extends StatelessWidget {
     return FractionallySizedBox(
       widthFactor: 0.5,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const Spacer(),
           _buildSquarePlaceholderWidget(),
