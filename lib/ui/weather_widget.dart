@@ -1,8 +1,20 @@
 import 'dart:developer';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_training/services/entity/weather_condition.dart';
+import 'package:flutter_training/services/service/weather_service.dart';
+import 'package:flutter_training/ui/weather_condition_widget.dart';
 
-class WeatherWidget extends StatelessWidget {
+class WeatherWidget extends StatefulWidget {
   const WeatherWidget({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _WeatherWidgetState();
+}
+
+class _WeatherWidgetState extends State<WeatherWidget> {
+  final _weatherService = WeatherService();
+  WeatherCondition? weatherCondition;
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +23,7 @@ class WeatherWidget extends StatelessWidget {
       child: Column(
         children: [
           const Spacer(),
-          _buildSquarePlaceholderWidget(),
+          WeatherConditionWidget(weatherCondition: weatherCondition),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: Row(
@@ -44,13 +56,6 @@ class WeatherWidget extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildSquarePlaceholderWidget() {
-    return const AspectRatio(
-      aspectRatio: 1,
-      child: Placeholder(),
     );
   }
 
@@ -96,6 +101,16 @@ class WeatherWidget extends StatelessWidget {
   }
 
   void _onPressedReloadButton() {
-    log('Reload Button Pressed!');
+    setState(() {
+      weatherCondition = _weatherService.fetchWeather();
+    });
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(
+      EnumProperty<WeatherCondition>('weatherCondition', weatherCondition),
+    );
   }
 }
