@@ -13,25 +13,18 @@ class WeatherWidget extends StatelessWidget {
         children: [
           const Spacer(),
           _buildSquarePlaceholderWidget(),
-          Row(
-            children: [
-              Expanded(
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: _buildMinTemperatureWidget(context),
-                  ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Row(
+              children: [
+                Expanded(
+                  child: _buildMinTemperatureWidget(context),
                 ),
-              ),
-              Expanded(
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    child: _buildMaxTemperatureWidget(context),
-                  ),
+                Expanded(
+                  child: _buildMaxTemperatureWidget(context),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           Expanded(
             child: Column(
@@ -76,7 +69,11 @@ class WeatherWidget extends StatelessWidget {
     required Color color,
   }) {
     final baseStyle = Theme.of(context).textTheme.labelLarge;
-    return Text(text, style: baseStyle?.copyWith(color: color));
+    return Text(
+      text,
+      style: baseStyle?.copyWith(color: color),
+      textAlign: TextAlign.center,
+    );
   }
 
   Widget _buildCloseButtonWidget() {
