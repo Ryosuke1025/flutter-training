@@ -7,17 +7,17 @@ extension WeatherConditionUiExtension on WeatherCondition {
     switch (this) {
       case WeatherCondition.sunny:
         return SvgPicture.asset(
-          'lib/ui/assets/sunny.svg',
+          'assets/sunny.svg',
           semanticsLabel: 'sunny',
         );
       case WeatherCondition.cloudy:
         return SvgPicture.asset(
-          'lib/ui/assets/cloudy.svg',
+          'assets/cloudy.svg',
           semanticsLabel: 'cloudy',
         );
       case WeatherCondition.rainy:
         return SvgPicture.asset(
-          'lib/ui/assets/rainy.svg',
+          'assets/rainy.svg',
           semanticsLabel: 'rainy',
         );
     }
