@@ -1,8 +1,10 @@
-import 'dart:developer';
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_training/services/entity/weather_condition.dart';
 import 'package:flutter_training/services/service/weather_service.dart';
+import 'package:flutter_training/ui/green_widget.dart';
 import 'package:flutter_training/ui/weather_condition_widget.dart';
 
 class WeatherWidget extends StatefulWidget {
@@ -15,6 +17,12 @@ class WeatherWidget extends StatefulWidget {
 class _WeatherWidgetState extends State<WeatherWidget> {
   final _weatherService = WeatherService();
   WeatherCondition? weatherCondition;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _pushGreenWidget());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +90,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
 
   Widget _buildCloseButtonWidget() {
     return TextButton(
-      onPressed: _onPressedCloseButton,
+      onPressed: _pushGreenWidget,
       style: TextButton.styleFrom(foregroundColor: Colors.blue),
       child: const Text('Close'),
     );
@@ -96,8 +104,22 @@ class _WeatherWidgetState extends State<WeatherWidget> {
     );
   }
 
-  void _onPressedCloseButton() {
-    log('Close Button Pressed!');
+  Future<void> _pushGreenWidget() async {
+    await Navigator.push(
+      context,
+      PageRouteBuilder<void>(
+        pageBuilder: (_, _, _) => const GreenWidget(),
+        transitionsBuilder: (_, animation, _, child) {
+          return SlideTransition(
+            position: Tween<Offset>(
+              begin: const Offset(-1, 0),
+              end: Offset.zero,
+            ).animate(animation),
+            child: child,
+          );
+        },
+      ),
+    );
   }
 
   void _onPressedReloadButton() {
