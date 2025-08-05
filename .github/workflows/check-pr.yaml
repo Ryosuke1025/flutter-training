@@ -47,6 +47,9 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Generate assets
+        run: flutter packages pub run build_runner build --delete-conflicting-outputs
+
         # https://github.com/invertase/github-action-dart-analyzer
       - name: Report analyze
         uses: invertase/github-action-dart-analyzer@v1
