@@ -50,6 +50,11 @@ jobs:
       - name: Generate assets
         run: flutter packages pub run build_runner build --delete-conflicting-outputs
 
+      - name: Check difference
+        run: |
+          git add -N .
+          git diff --name-only --exit-code
+
         # https://github.com/invertase/github-action-dart-analyzer
       - name: Report analyze
         uses: invertase/github-action-dart-analyzer@v1
