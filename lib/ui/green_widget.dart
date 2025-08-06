@@ -1,21 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_training/ui/route_observer.dart';
+import 'package:flutter_training/ui/weather_widget.dart';
 
 class GreenWidget extends StatefulWidget {
   const GreenWidget({super.key});
 
   @override
-  State<GreenWidget> createState() => _GreenWidgetState();
+  State<GreenWidget> createState() => GreenWidgetState();
 }
 
-class _GreenWidgetState extends State<GreenWidget> {
+class GreenWidgetState extends State<GreenWidget> with RouteAware {
   @override
-  void initState() {
-    super.initState();
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (mounted) {
-        Navigator.pop(context);
-      }
-    });
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose() {
+    routeObserver.unsubscribe(this);
+    super.dispose();
+  }
+
+  @override
+  void didPush() {
+    _pushWeatherWidget(context);
+  }
+
+  @override
+  void didPopNext() {
+    _pushWeatherWidget(context);
   }
 
   @override
@@ -23,5 +37,24 @@ class _GreenWidgetState extends State<GreenWidget> {
     return Container(
       color: Colors.green,
     );
+  }
+
+  void _pushWeatherWidget(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 500), () async {
+        if (context.mounted) {
+          await Navigator.push(
+            context,
+            MaterialPageRoute<void>(
+              builder: (context) => const Scaffold(
+                body: Center(
+                  child: WeatherWidget(),
+                ),
+              ),
+            ),
+          );
+        }
+      });
+    });
   }
 }
