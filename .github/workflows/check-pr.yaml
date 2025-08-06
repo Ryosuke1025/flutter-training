@@ -47,6 +47,14 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Generate assets
+        run: dart run build_runner build -d
+
+      - name: Check difference
+        run: |
+          git add -N .
+          git diff --name-only --exit-code
+
         # https://github.com/invertase/github-action-dart-analyzer
       - name: Report analyze
         uses: invertase/github-action-dart-analyzer@v1
