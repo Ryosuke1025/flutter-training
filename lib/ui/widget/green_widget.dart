@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_training/ui/route_observer.dart';
-import 'package:flutter_training/ui/weather_widget.dart';
+import 'package:flutter_training/ui/widget/weather_widget.dart';
 
 class GreenWidget extends StatefulWidget {
   const GreenWidget({super.key});
