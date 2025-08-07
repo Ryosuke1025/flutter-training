@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_training/services/entity/weather_condition.dart';
@@ -97,7 +96,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
   }
 
   void _onPressedCloseButton() {
-    log('Close Button Pressed!');
+    Navigator.pop(context);
   }
 
   void _onPressedReloadButton() {
