@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_training/ui/mixin/navigation_mixin.dart';
 import 'package:flutter_training/ui/route_observer.dart';
 import 'package:flutter_training/ui/widget/weather_widget.dart';
 
@@ -9,7 +10,8 @@ class GreenWidget extends StatefulWidget {
   State<GreenWidget> createState() => GreenWidgetState();
 }
 
-class GreenWidgetState extends State<GreenWidget> with RouteAware {
+class GreenWidgetState extends State<GreenWidget>
+    with RouteAware, NavigationMixin {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -24,12 +26,12 @@ class GreenWidgetState extends State<GreenWidget> with RouteAware {
 
   @override
   void didPush() {
-    _pushWeatherWidget(context);
+    delayedPush(context, const WeatherWidget());
   }
 
   @override
   void didPopNext() {
-    _pushWeatherWidget(context);
+    delayedPush(context, const WeatherWidget());
   }
 
   @override
@@ -37,24 +39,5 @@ class GreenWidgetState extends State<GreenWidget> with RouteAware {
     return Container(
       color: Colors.green,
     );
-  }
-
-  void _pushWeatherWidget(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(milliseconds: 500), () async {
-        if (context.mounted) {
-          await Navigator.push(
-            context,
-            MaterialPageRoute<void>(
-              builder: (context) => const Scaffold(
-                body: Center(
-                  child: WeatherWidget(),
-                ),
-              ),
-            ),
-          );
-        }
-      });
-    });
   }
 }
