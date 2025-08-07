@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_training/services/entity/weather_condition.dart';
 import 'package:flutter_training/services/service/weather_service.dart';
-import 'package:flutter_training/ui/weather_condition_widget.dart';
+import 'package:flutter_training/ui/widget/weather_condition_widget.dart';
 
 class WeatherWidget extends StatefulWidget {
   const WeatherWidget({super.key});
