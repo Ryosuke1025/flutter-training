@@ -1,6 +1,6 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_training/ui/route_observer.dart';
-import 'package:flutter_training/ui/weather_widget.dart';
+import 'package:flutter_training/ui/weather_screen.dart';
 
 class GreenWidget extends StatefulWidget {
   const GreenWidget({super.key});
@@ -9,27 +9,11 @@ class GreenWidget extends StatefulWidget {
   State<GreenWidget> createState() => GreenWidgetState();
 }
 
-class GreenWidgetState extends State<GreenWidget> with RouteAware {
+class GreenWidgetState extends State<GreenWidget> {
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    routeObserver.subscribe(this, ModalRoute.of(context)!);
-  }
-
-  @override
-  void dispose() {
-    routeObserver.unsubscribe(this);
-    super.dispose();
-  }
-
-  @override
-  void didPush() {
-    _pushWeatherWidget(context);
-  }
-
-  @override
-  void didPopNext() {
-    _pushWeatherWidget(context);
+  void initState() {
+    super.initState();
+    unawaited(transitionToWeatherWidget());
   }
 
   @override
@@ -39,22 +23,15 @@ class GreenWidgetState extends State<GreenWidget> with RouteAware {
     );
   }
 
-  void _pushWeatherWidget(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(milliseconds: 500), () async {
-        if (context.mounted) {
-          await Navigator.push(
-            context,
-            MaterialPageRoute<void>(
-              builder: (context) => const Scaffold(
-                body: Center(
-                  child: WeatherWidget(),
-                ),
-              ),
-            ),
-          );
-        }
-      });
-    });
+  Future<void> transitionToWeatherWidget() async {
+    await WidgetsBinding.instance.endOfFrame;
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+    if (mounted) {
+      await Navigator.push(
+        context,
+        MaterialPageRoute<void>(builder: (context) => const WeatherScreen()),
+      );
+      await transitionToWeatherWidget();
+    }
   }
 }
