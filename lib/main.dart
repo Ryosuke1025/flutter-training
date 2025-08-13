@@ -13,11 +13,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorObservers: [routeObserver],
-      home: const Scaffold(
-        body: Center(
-          child: GreenWidget(),
-        ),
-      ),
+      home: const GreenWidget(),
     );
   }
 }
