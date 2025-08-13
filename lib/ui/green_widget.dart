@@ -18,7 +18,7 @@ class GreenWidgetState extends State<GreenWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return const ColoredBox(
       color: Colors.green,
     );
   }
