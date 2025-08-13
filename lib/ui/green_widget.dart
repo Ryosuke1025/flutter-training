@@ -13,7 +13,7 @@ class GreenWidgetState extends State<GreenWidget> {
   @override
   void initState() {
     super.initState();
-    unawaited(transitionToWeatherWidget());
+    unawaited(transitionToWeatherScreen());
   }
 
   @override
@@ -23,7 +23,7 @@ class GreenWidgetState extends State<GreenWidget> {
     );
   }
 
-  Future<void> transitionToWeatherWidget() async {
+  Future<void> transitionToWeatherScreen() async {
     await WidgetsBinding.instance.endOfFrame;
     await Future<void>.delayed(const Duration(milliseconds: 500));
     if (mounted) {
@@ -31,7 +31,7 @@ class GreenWidgetState extends State<GreenWidget> {
         context,
         MaterialPageRoute<void>(builder: (context) => const WeatherScreen()),
       );
-      await transitionToWeatherWidget();
+      await transitionToWeatherScreen();
     }
   }
 }
