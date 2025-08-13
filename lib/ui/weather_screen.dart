@@ -1,60 +1,63 @@
-import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_training/services/entity/weather_condition.dart';
 import 'package:flutter_training/services/service/weather_service.dart';
 import 'package:flutter_training/ui/weather_condition_widget.dart';
 
-class WeatherWidget extends StatefulWidget {
-  const WeatherWidget({super.key});
+class WeatherScreen extends StatefulWidget {
+  const WeatherScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => _WeatherWidgetState();
+  State<StatefulWidget> createState() => _WeatherScreenState();
 }
 
-class _WeatherWidgetState extends State<WeatherWidget> {
+class _WeatherScreenState extends State<WeatherScreen> {
   final _weatherService = WeatherService();
   WeatherCondition? weatherCondition;
 
   @override
   Widget build(BuildContext context) {
-    return FractionallySizedBox(
-      widthFactor: 0.5,
-      child: Column(
-        children: [
-          const Spacer(),
-          WeatherConditionWidget(weatherCondition: weatherCondition),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Row(
-              children: [
-                Expanded(
-                  child: _buildMinTemperatureWidget(context),
-                ),
-                Expanded(
-                  child: _buildMaxTemperatureWidget(context),
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: Column(
-              children: [
-                const SizedBox(height: 80),
-                Row(
+    return Scaffold(
+      body: Center(
+        child: FractionallySizedBox(
+          widthFactor: 0.5,
+          child: Column(
+            children: [
+              const Spacer(),
+              WeatherConditionWidget(weatherCondition: weatherCondition),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Row(
                   children: [
                     Expanded(
-                      child: _buildCloseButtonWidget(),
+                      child: _buildMinTemperatureWidget(context),
                     ),
                     Expanded(
-                      child: _buildReloadButtonWidget(),
+                      child: _buildMaxTemperatureWidget(context),
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+              Expanded(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 80),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildCloseButtonWidget(),
+                        ),
+                        Expanded(
+                          child: _buildReloadButtonWidget(),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -97,7 +100,7 @@ class _WeatherWidgetState extends State<WeatherWidget> {
   }
 
   void _onPressedCloseButton() {
-    log('Close Button Pressed!');
+    Navigator.pop(context);
   }
 
   void _onPressedReloadButton() {
