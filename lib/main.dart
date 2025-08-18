@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_training/ui/route_observer.dart';
-import 'package:flutter_training/ui/widget/green_widget.dart';
+import 'package:flutter_training/ui/green_widget.dart';
 
 void main() {
   runApp(const MainApp());
@@ -11,13 +10,8 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorObservers: [routeObserver],
-      home: const Scaffold(
-        body: Center(
-          child: GreenWidget(),
-        ),
-      ),
+    return const MaterialApp(
+      home: GreenWidget(),
     );
   }
 }
