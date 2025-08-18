@@ -6,9 +6,13 @@ class WeatherService {
   final _weather = YumemiWeather();
 
   WeatherCondition? fetchWeather() {
-    final weatherConditionString = _weather.fetchSimpleWeather();
-    return WeatherCondition.values.firstWhereOrNull(
-      (e) => e.name == weatherConditionString,
-    );
+    try {
+      final weatherConditionString = _weather.fetchThrowsWeather('tokyo');
+      return WeatherCondition.values.firstWhereOrNull(
+        (e) => e.name == weatherConditionString,
+      );
+    } on YumemiWeatherError {
+      return null;
+    }
   }
 }

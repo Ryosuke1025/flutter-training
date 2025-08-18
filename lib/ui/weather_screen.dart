@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_training/services/entity/weather_condition.dart';
@@ -104,9 +106,37 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   void _onPressedReloadButton() {
+    final newWeatherCondition = _weatherService.fetchWeather();
+
+    if (newWeatherCondition == null) {
+      unawaited(_showErrorDialog());
+      return;
+    }
+
     setState(() {
-      weatherCondition = _weatherService.fetchWeather();
+      weatherCondition = newWeatherCondition;
     });
+  }
+
+  Future<void> _showErrorDialog() async {
+    await WidgetsBinding.instance.endOfFrame;
+    if (mounted) {
+      await showDialog<void>(
+        context: context,
+        builder: (dialogContext) {
+          return AlertDialog(
+            title: const Text('エラーが発生しました'),
+            content: const Text('天気の取得に失敗しました。'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   @override
