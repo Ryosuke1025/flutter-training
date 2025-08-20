@@ -119,7 +119,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   Future<void> _showErrorDialog() async {
-    await WidgetsBinding.instance.endOfFrame;
     if (mounted) {
       await showDialog<void>(
         context: context,
