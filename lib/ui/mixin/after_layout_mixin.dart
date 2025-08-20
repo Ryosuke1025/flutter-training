@@ -1,10 +1,17 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 mixin AfterLayoutMixin<T extends StatefulWidget> on State<T> {
-  Future<void> performAfterLayout(Future<void> Function() action) async {
-    await WidgetsBinding.instance.endOfFrame;
-    if (mounted) {
-      await action();
-    }
+  @protected
+  Future<void> performAfterLayout() async {}
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (mounted) {
+        await performAfterLayout();
+      }
+    });
   }
 }

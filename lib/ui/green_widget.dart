@@ -12,26 +12,21 @@ class GreenWidget extends StatefulWidget {
 
 class GreenWidgetState extends State<GreenWidget> with AfterLayoutMixin {
   @override
-  void initState() {
-    super.initState();
-    unawaited(performAfterLayout(_delayedPush));
-  }
-
-  @override
   Widget build(BuildContext context) {
     return const ColoredBox(
       color: Colors.green,
     );
   }
 
-  Future<void> _delayedPush() async {
+  @override
+  Future<void> performAfterLayout() async {
     await Future<void>.delayed(const Duration(milliseconds: 500));
     if (mounted) {
       await Navigator.push(
         context,
         MaterialPageRoute<void>(builder: (context) => const WeatherScreen()),
       );
-      await _delayedPush();
+      await performAfterLayout();
     }
   }
 }
