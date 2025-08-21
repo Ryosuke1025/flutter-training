@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_training/services/entity/weather_condition.dart';
+import 'package:flutter_training/services/entity/weather.dart';
 import 'package:flutter_training/services/service/weather_service.dart';
 import 'package:flutter_training/ui/extension/yumemi_weather_error_extension.dart';
 import 'package:flutter_training/ui/weather_condition_widget.dart';
@@ -17,7 +17,7 @@ class WeatherScreen extends StatefulWidget {
 
 class _WeatherScreenState extends State<WeatherScreen> {
   final _weatherService = WeatherService();
-  WeatherCondition? weatherCondition;
+  Weather? weather;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,9 @@ class _WeatherScreenState extends State<WeatherScreen> {
           child: Column(
             children: [
               const Spacer(),
-              WeatherConditionWidget(weatherCondition: weatherCondition),
+              WeatherConditionWidget(
+                weatherCondition: weather?.weatherCondition,
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Row(
@@ -67,11 +69,19 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   Widget _buildMinTemperatureWidget(BuildContext context) {
-    return _buildTemperatureWidget(context, text: '** ℃', color: Colors.blue);
+    return _buildTemperatureWidget(
+      context,
+      text: '${weather?.minTemperature ?? '**'} ℃',
+      color: Colors.blue,
+    );
   }
 
   Widget _buildMaxTemperatureWidget(BuildContext context) {
-    return _buildTemperatureWidget(context, text: '** ℃', color: Colors.red);
+    return _buildTemperatureWidget(
+      context,
+      text: '${weather?.maxTemperature ?? '**'} ℃',
+      color: Colors.red,
+    );
   }
 
   Widget _buildTemperatureWidget(
@@ -108,14 +118,19 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   void _onPressedReloadButton() {
-    try {
-      final newWeatherCondition = _weatherService.fetchWeather();
-      setState(() {
-        weatherCondition = newWeatherCondition;
-      });
-    } on YumemiWeatherError catch (error) {
-      unawaited(_showErrorDialog(error.description));
+    final newWeather = _weatherService.fetchWeather(
+      area: 'tokyo',
+      date: DateTime.now(),
+    );
+
+    if (newWeather == null) {
+      unawaited(_showErrorDialog());
+      return;
     }
+
+    setState(() {
+      weather = newWeather;
+    });
   }
 
   Future<void> _showErrorDialog(String description) async {
@@ -142,7 +157,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(
-      EnumProperty<WeatherCondition>('weatherCondition', weatherCondition),
+      DiagnosticsProperty<Weather?>('weather', weather),
     );
   }
 }
