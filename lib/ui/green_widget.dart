@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_training/ui/mixin/after_layout_mixin.dart';
 import 'package:flutter_training/ui/weather_screen.dart';
 
 class GreenWidget extends StatefulWidget {
@@ -9,13 +10,7 @@ class GreenWidget extends StatefulWidget {
   State<GreenWidget> createState() => GreenWidgetState();
 }
 
-class GreenWidgetState extends State<GreenWidget> {
-  @override
-  void initState() {
-    super.initState();
-    unawaited(transitionToWeatherScreen());
-  }
-
+class GreenWidgetState extends State<GreenWidget> with AfterLayoutMixin {
   @override
   Widget build(BuildContext context) {
     return const ColoredBox(
@@ -23,15 +18,15 @@ class GreenWidgetState extends State<GreenWidget> {
     );
   }
 
-  Future<void> transitionToWeatherScreen() async {
-    await WidgetsBinding.instance.endOfFrame;
+  @override
+  Future<void> performAfterLayout() async {
     await Future<void>.delayed(const Duration(milliseconds: 500));
     if (mounted) {
       await Navigator.push(
         context,
         MaterialPageRoute<void>(builder: (context) => const WeatherScreen()),
       );
-      await transitionToWeatherScreen();
+      await performAfterLayout();
     }
   }
 }
