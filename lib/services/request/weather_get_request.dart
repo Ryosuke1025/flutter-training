@@ -7,7 +7,7 @@ class WeatherGetRequest {
   final String area;
   final DateTime date;
 
-  Map<String, dynamic> toJsonString() => <String, dynamic>{
+  Map<String, dynamic> toMap() => <String, dynamic>{
     'area': area,
     'date': date.toIso8601String(),
   };
