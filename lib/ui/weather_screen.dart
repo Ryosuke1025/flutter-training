@@ -4,7 +4,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_training/services/entity/weather_condition.dart';
 import 'package:flutter_training/services/service/weather_service.dart';
+import 'package:flutter_training/ui/extension/yumemi_weather_error_extension.dart';
 import 'package:flutter_training/ui/weather_condition_widget.dart';
+import 'package:yumemi_weather/yumemi_weather.dart';
 
 class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
@@ -106,26 +108,24 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   void _onPressedReloadButton() {
-    final newWeatherCondition = _weatherService.fetchWeather();
-
-    if (newWeatherCondition == null) {
-      unawaited(_showErrorDialog());
-      return;
+    try {
+      final newWeatherCondition = _weatherService.fetchWeather();
+      setState(() {
+        weatherCondition = newWeatherCondition;
+      });
+    } on YumemiWeatherError catch (error) {
+      unawaited(_showErrorDialog(error.description));
     }
-
-    setState(() {
-      weatherCondition = newWeatherCondition;
-    });
   }
 
-  Future<void> _showErrorDialog() async {
+  Future<void> _showErrorDialog(String description) async {
     if (mounted) {
       await showDialog<void>(
         context: context,
         builder: (dialogContext) {
           return AlertDialog(
-            title: const Text('エラーが発生しました'),
-            content: const Text('天気の取得に失敗しました。'),
+            title: const Text('天気の取得に失敗しました。'),
+            content: Text(description),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(dialogContext).pop(),
