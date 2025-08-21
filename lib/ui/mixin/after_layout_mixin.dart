@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 mixin AfterLayoutMixin<T extends StatefulWidget> on State<T> {
   @protected
-  Future<void> performAfterLayout() async {}
+  Future<void> performAfterLayout();
 
   @override
   void initState() {
