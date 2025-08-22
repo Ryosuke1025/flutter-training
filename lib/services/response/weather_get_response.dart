@@ -1,5 +1,8 @@
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'weather_get_response.g.dart';
+
+@JsonSerializable(createToJson: false)
 class WeatherGetResponse {
   const WeatherGetResponse({
     required this.weatherCondition,
@@ -8,42 +11,17 @@ class WeatherGetResponse {
     required this.date,
   });
 
-  factory WeatherGetResponse.fromJsonString(String jsonString) {
-    final map = jsonDecode(jsonString);
-    if (map is! Map<String, dynamic>) {
-      throw const FormatException('Root is not an object');
-    }
+  factory WeatherGetResponse.fromJson(Map<String, dynamic> json) =>
+      _$WeatherGetResponseFromJson(json);
 
-    final wc = map['weather_condition'];
-    if (wc is! String || wc.isEmpty) {
-      throw const FormatException('weather_condition is missing/invalid');
-    }
-
-    final max = map['max_temperature'];
-    if (max is! int) {
-      throw const FormatException('max_temperature is missing/invalid');
-    }
-
-    final min = map['min_temperature'];
-    if (min is! int) {
-      throw const FormatException('min_temperature is missing/invalid');
-    }
-
-    final date = map['date'];
-    if (date is! String || date.isEmpty) {
-      throw const FormatException('date is missing/invalid');
-    }
-
-    return WeatherGetResponse(
-      weatherCondition: wc,
-      maxTemperature: max,
-      minTemperature: min,
-      date: date,
-    );
-  }
-
+  @JsonKey(name: 'weather_condition')
   final String weatherCondition;
+
+  @JsonKey(name: 'max_temperature')
   final int maxTemperature;
+
+  @JsonKey(name: 'min_temperature')
   final int minTemperature;
-  final String date;
+
+  final DateTime date;
 }

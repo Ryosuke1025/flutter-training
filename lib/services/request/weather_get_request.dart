@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'weather_get_request.g.dart';
+
+@JsonSerializable(createFactory: false)
 class WeatherGetRequest {
   const WeatherGetRequest({
     required this.area,
@@ -7,8 +12,5 @@ class WeatherGetRequest {
   final String area;
   final DateTime date;
 
-  Map<String, dynamic> toMap() => <String, dynamic>{
-    'area': area,
-    'date': date.toIso8601String(),
-  };
+  Map<String, dynamic> toJson() => _$WeatherGetRequestToJson(this);
 }
