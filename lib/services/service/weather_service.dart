@@ -16,9 +16,11 @@ class WeatherService {
   }) {
     try {
       final request = WeatherGetRequest(area: area, date: date);
-      final jsonString = jsonEncode(request.toMap());
+      final jsonString = jsonEncode(request.toJson());
       final responseJsonString = _weather.fetchWeather(jsonString);
-      final response = WeatherGetResponse.fromJsonString(responseJsonString);
+      final response = WeatherGetResponse.fromJson(
+        jsonDecode(responseJsonString) as Map<String, dynamic>,
+      );
       final weatherCondition = WeatherCondition.values.firstWhereOrNull(
         (e) => e.name == response.weatherCondition,
       );
