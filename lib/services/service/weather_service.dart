@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:collection/collection.dart';
 import 'package:flutter_training/services/entity/weather.dart';
 import 'package:flutter_training/services/entity/weather_condition.dart';
@@ -9,7 +10,7 @@ import 'package:yumemi_weather/yumemi_weather.dart';
 class WeatherService {
   final _weather = YumemiWeather();
 
-  Weather? fetchWeather({
+  Weather fetchWeather({
     required String area,
     required DateTime date,
   }) {
@@ -22,7 +23,9 @@ class WeatherService {
         (e) => e.name == response.weatherCondition,
       );
       if (weatherCondition == null) {
-        return null;
+        // weatherConditionがnullの場合は、YumemiWeatherError.unknownをthrowする
+        // ignore: only_throw_errors
+        throw YumemiWeatherError.unknown;
       }
       return Weather(
         weatherCondition: weatherCondition,
@@ -30,12 +33,6 @@ class WeatherService {
         minTemperature: response.minTemperature,
         date: response.date,
       );
-      if (weatherCondition == null) {
-        // weatherConditionがnullの場合は、YumemiWeatherError.unknownをthrowする
-        // ignore: only_throw_errors
-        throw YumemiWeatherError.unknown;
-      }
-      return weatherCondition;
     } on YumemiWeatherError catch (error, stackTrace) {
       log('Failed to fetchWeather.', error: error, stackTrace: stackTrace);
       rethrow;

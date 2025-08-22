@@ -83,19 +83,17 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 
   void _onPressedReloadButton() {
-    final newWeather = _weatherService.fetchWeather(
-      area: 'tokyo',
-      date: DateTime.now(),
-    );
-
-    if (newWeather == null) {
-      unawaited(_showErrorDialog());
-      return;
+    try {
+      final newWeather = _weatherService.fetchWeather(
+        area: 'tokyo',
+        date: DateTime.now(),
+      );
+      setState(() {
+        weather = newWeather;
+      });
+    } on YumemiWeatherError catch (error) {
+      unawaited(_showErrorDialog(error.description));
     }
-
-    setState(() {
-      weather = newWeather;
-    });
   }
 
   Future<void> _showErrorDialog(String description) async {
