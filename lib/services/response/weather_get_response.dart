@@ -1,5 +1,8 @@
-import 'dart:convert';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'weather_get_response.g.dart';
+
+@JsonSerializable(createToJson: false)
 class WeatherGetResponse {
   const WeatherGetResponse({
     required this.weatherCondition,
@@ -8,18 +11,17 @@ class WeatherGetResponse {
     required this.date,
   });
 
-  factory WeatherGetResponse.fromJsonString(String jsonString) {
-    final json = jsonDecode(jsonString) as Map<String, dynamic>;
-    return WeatherGetResponse(
-      weatherCondition: json['weather_condition'] as String,
-      maxTemperature: json['max_temperature'] as int,
-      minTemperature: json['min_temperature'] as int,
-      date: DateTime.parse(json['date'] as String),
-    );
-  }
+  factory WeatherGetResponse.fromJson(Map<String, dynamic> json) =>
+      _$WeatherGetResponseFromJson(json);
 
+  @JsonKey(name: 'weather_condition')
   final String weatherCondition;
+
+  @JsonKey(name: 'max_temperature')
   final int maxTemperature;
+
+  @JsonKey(name: 'min_temperature')
   final int minTemperature;
+
   final DateTime date;
 }
