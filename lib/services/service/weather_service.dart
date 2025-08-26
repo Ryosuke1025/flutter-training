@@ -27,11 +27,12 @@ class WeatherService {
         // ignore: only_throw_errors
         throw YumemiWeatherError.unknown;
       }
+      final parsedDate = DateTime.parse(response.date);
       return Weather(
         weatherCondition: weatherCondition,
         maxTemperature: response.maxTemperature,
         minTemperature: response.minTemperature,
-        date: response.date,
+        date: parsedDate,
       );
     } on YumemiWeatherError catch (error, stackTrace) {
       log('Failed to fetchWeather.', error: error, stackTrace: stackTrace);

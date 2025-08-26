@@ -29,10 +29,9 @@ class WeatherGetResponse {
       throw const FormatException('min_temperature is missing/invalid');
     }
 
-    final dateStr = map['date'];
-    final date = (dateStr is String) ? DateTime.tryParse(dateStr) : null;
-    if (date == null) {
-      throw const FormatException('date is not a valid ISO-8601 string');
+    final date = map['date'];
+    if (date is! String || date.isEmpty) {
+      throw const FormatException('date is missing/invalid');
     }
 
     return WeatherGetResponse(
@@ -46,5 +45,5 @@ class WeatherGetResponse {
   final String weatherCondition;
   final int maxTemperature;
   final int minTemperature;
-  final DateTime date;
+  final String date;
 }
