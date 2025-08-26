@@ -9,12 +9,37 @@ class WeatherGetResponse {
   });
 
   factory WeatherGetResponse.fromJsonString(String jsonString) {
-    final json = jsonDecode(jsonString) as Map<String, dynamic>;
+    final map = jsonDecode(jsonString);
+    if (map is! Map<String, dynamic>) {
+      throw const FormatException('Root is not an object');
+    }
+
+    final wc = map['weather_condition'];
+    if (wc is! String || wc.isEmpty) {
+      throw const FormatException('weather_condition is missing/invalid');
+    }
+
+    final max = map['max_temperature'];
+    if (max is! int) {
+      throw const FormatException('max_temperature is missing/invalid');
+    }
+
+    final min = map['min_temperature'];
+    if (min is! int) {
+      throw const FormatException('min_temperature is missing/invalid');
+    }
+
+    final dateStr = map['date'];
+    final date = (dateStr is String) ? DateTime.tryParse(dateStr) : null;
+    if (date == null) {
+      throw const FormatException('date is not a valid ISO-8601 string');
+    }
+
     return WeatherGetResponse(
-      weatherCondition: json['weather_condition'] as String,
-      maxTemperature: json['max_temperature'] as int,
-      minTemperature: json['min_temperature'] as int,
-      date: DateTime.parse(json['date'] as String),
+      weatherCondition: wc,
+      maxTemperature: max,
+      minTemperature: min,
+      date: date,
     );
   }
 

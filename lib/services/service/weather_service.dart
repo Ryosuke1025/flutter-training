@@ -36,6 +36,11 @@ class WeatherService {
     } on YumemiWeatherError catch (error, stackTrace) {
       log('Failed to fetchWeather.', error: error, stackTrace: stackTrace);
       rethrow;
+    } on FormatException catch (error, stackTrace) {
+      log('Failed to fetchWeather.', error: error, stackTrace: stackTrace);
+      // Jsonのパースに失敗した場合は、YumemiWeatherError.unknownをthrowする
+      // ignore: only_throw_errors
+      throw YumemiWeatherError.unknown;
     }
   }
 }
