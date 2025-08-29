@@ -7,9 +7,51 @@ part of 'weather_get_response.dart';
 // **************************************************************************
 
 WeatherGetResponse _$WeatherGetResponseFromJson(Map<String, dynamic> json) =>
-    WeatherGetResponse(
-      weatherCondition: json['weather_condition'] as String,
-      maxTemperature: (json['max_temperature'] as num).toInt(),
-      minTemperature: (json['min_temperature'] as num).toInt(),
-      date: DateTime.parse(json['date'] as String),
+    $checkedCreate(
+      'WeatherGetResponse',
+      json,
+      ($checkedConvert) {
+        $checkKeys(
+          json,
+          allowedKeys: const [
+            'weather_condition',
+            'max_temperature',
+            'min_temperature',
+            'date',
+          ],
+          requiredKeys: const [
+            'weather_condition',
+            'max_temperature',
+            'min_temperature',
+            'date',
+          ],
+          disallowNullValues: const [
+            'weather_condition',
+            'max_temperature',
+            'min_temperature',
+            'date',
+          ],
+        );
+        final val = WeatherGetResponse(
+          weatherCondition: $checkedConvert(
+            'weather_condition',
+            (v) => v as String,
+          ),
+          maxTemperature: $checkedConvert(
+            'max_temperature',
+            (v) => (v as num).toInt(),
+          ),
+          minTemperature: $checkedConvert(
+            'min_temperature',
+            (v) => (v as num).toInt(),
+          ),
+          date: $checkedConvert('date', (v) => v as String),
+        );
+        return val;
+      },
+      fieldKeyMap: const {
+        'weatherCondition': 'weather_condition',
+        'maxTemperature': 'max_temperature',
+        'minTemperature': 'min_temperature',
+      },
     );

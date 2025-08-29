@@ -2,7 +2,11 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'weather_get_response.g.dart';
 
-@JsonSerializable(createToJson: false)
+@JsonSerializable(
+  createToJson: false,
+  checked: true,
+  disallowUnrecognizedKeys: true,
+)
 class WeatherGetResponse {
   const WeatherGetResponse({
     required this.weatherCondition,
@@ -14,14 +18,15 @@ class WeatherGetResponse {
   factory WeatherGetResponse.fromJson(Map<String, dynamic> json) =>
       _$WeatherGetResponseFromJson(json);
 
-  @JsonKey(name: 'weather_condition')
+  @JsonKey(name: 'weather_condition', required: true, disallowNullValue: true)
   final String weatherCondition;
 
-  @JsonKey(name: 'max_temperature')
+  @JsonKey(name: 'max_temperature', required: true, disallowNullValue: true)
   final int maxTemperature;
 
-  @JsonKey(name: 'min_temperature')
+  @JsonKey(name: 'min_temperature', required: true, disallowNullValue: true)
   final int minTemperature;
 
-  final DateTime date;
+  @JsonKey(required: true, disallowNullValue: true)
+  final String date;
 }
