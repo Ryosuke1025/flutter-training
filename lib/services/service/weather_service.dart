@@ -8,9 +8,30 @@ import 'package:flutter_training/services/response/weather_get_response.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
 class WeatherService {
-  final _weather = YumemiWeather();
+  WeatherService({required this.setWeather, required this.setError});
 
-  Weather fetchWeather({
+  final _weather = YumemiWeather();
+  final void Function(Weather) setWeather;
+  final void Function(YumemiWeatherError?) setError;
+
+  void updateWeather({
+    required String area,
+    required DateTime date,
+  }) {
+    try {
+      final weather = _fetchWeather(area: area, date: date);
+      setWeather(weather);
+    } on YumemiWeatherError catch (error, stackTrace) {
+      setError(error);
+      log('Failed to fetchWeather.', error: error, stackTrace: stackTrace);
+    }
+  }
+
+  void clearError() {
+    setError(null);
+  }
+
+  Weather _fetchWeather({
     required String area,
     required DateTime date,
   }) {
@@ -30,12 +51,13 @@ class WeatherService {
         throw YumemiWeatherError.unknown;
       }
       final parsedDate = DateTime.parse(response.date);
-      return Weather(
+      final weather = Weather(
         weatherCondition: weatherCondition,
         maxTemperature: response.maxTemperature,
         minTemperature: response.minTemperature,
         date: parsedDate,
       );
+      return weather;
     } on YumemiWeatherError catch (error, stackTrace) {
       log('Failed to fetchWeather.', error: error, stackTrace: stackTrace);
       rethrow;
