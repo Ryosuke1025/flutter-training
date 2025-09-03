@@ -1,26 +1,16 @@
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_training/services/entity/weather.dart';
-import 'package:flutter_training/services/service/weather_service.dart';
-import 'package:flutter_training/ui/extension/yumemi_weather_error_extension.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_training/ui/providers/weather_providers.dart';
 import 'package:flutter_training/ui/weather_condition_widget.dart';
 import 'package:flutter_training/ui/weather_temperature_widget.dart';
-import 'package:yumemi_weather/yumemi_weather.dart';
 
-class WeatherScreen extends StatefulWidget {
+class WeatherScreen extends ConsumerWidget {
   const WeatherScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => _WeatherScreenState();
-}
-
-class _WeatherScreenState extends State<WeatherScreen> {
-  final _weatherService = WeatherService();
-  Weather? weather;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(weatherStateProvider);
     return Scaffold(
       body: Center(
         child: FractionallySizedBox(
@@ -29,13 +19,13 @@ class _WeatherScreenState extends State<WeatherScreen> {
             children: [
               const Spacer(),
               WeatherConditionWidget(
-                weatherCondition: weather?.weatherCondition,
+                weatherCondition: state.weather?.weatherCondition,
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: WeatherTemperatureWidget(
-                  maxTemperature: weather?.maxTemperature,
-                  minTemperature: weather?.minTemperature,
+                  maxTemperature: state.weather?.maxTemperature,
+                  minTemperature: state.weather?.minTemperature,
                 ),
               ),
               Expanded(
@@ -45,10 +35,10 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     Row(
                       children: [
                         Expanded(
-                          child: _buildCloseButtonWidget(),
+                          child: _buildCloseButtonWidget(context),
                         ),
                         Expanded(
-                          child: _buildReloadButtonWidget(),
+                          child: _buildReloadButtonWidget(ref),
                         ),
                       ],
                     ),
@@ -62,65 +52,31 @@ class _WeatherScreenState extends State<WeatherScreen> {
     );
   }
 
-  Widget _buildCloseButtonWidget() {
+  Widget _buildCloseButtonWidget(BuildContext context) {
     return TextButton(
-      onPressed: _onPressedCloseButton,
+      onPressed: () => _onPressedCloseButton(context),
       style: TextButton.styleFrom(foregroundColor: Colors.blue),
       child: const Text('Close'),
     );
   }
 
-  Widget _buildReloadButtonWidget() {
+  Widget _buildReloadButtonWidget(WidgetRef ref) {
     return TextButton(
-      onPressed: _onPressedReloadButton,
+      onPressed: () => _onPressedReloadButton(ref),
       style: TextButton.styleFrom(foregroundColor: Colors.blue),
       child: const Text('Reload'),
     );
   }
 
-  void _onPressedCloseButton() {
+  void _onPressedCloseButton(BuildContext context) {
     Navigator.pop(context);
   }
 
-  void _onPressedReloadButton() {
-    try {
-      final newWeather = _weatherService.fetchWeather(
-        area: 'tokyo',
-        date: DateTime.now(),
-      );
-      setState(() {
-        weather = newWeather;
-      });
-    } on YumemiWeatherError catch (error) {
-      unawaited(_showErrorDialog(error.description));
-    }
-  }
-
-  Future<void> _showErrorDialog(String description) async {
-    if (mounted) {
-      await showDialog<void>(
-        context: context,
-        builder: (dialogContext) {
-          return AlertDialog(
-            title: const Text('天気の取得に失敗しました。'),
-            content: Text(description),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(dialogContext).pop(),
-                child: const Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-    }
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(
-      DiagnosticsProperty<Weather?>('weather', weather),
+  void _onPressedReloadButton(WidgetRef ref) {
+    unawaited(
+      ref
+          .read(weatherActionsProvider)
+          .updateWeather(area: 'tokyo', date: DateTime.now()),
     );
   }
 }
