@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_training/core/bootstrap/install_error_listener.dart';
 import 'package:flutter_training/core/di/overrides.dart';
-import 'package:flutter_training/ui/widget/green_widget.dart';
+import 'package:flutter_training/ui/widgets/green_widget.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
