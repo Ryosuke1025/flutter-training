@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_training/ui/providers/weather_providers.dart';
-import 'package:flutter_training/ui/weather_condition_widget.dart';
-import 'package:flutter_training/ui/weather_temperature_widget.dart';
+import 'package:flutter_training/ui/widget/weather_condition_widget.dart';
+import 'package:flutter_training/ui/widget/weather_temperature_widget.dart';
 
 class WeatherScreen extends ConsumerWidget {
   const WeatherScreen({super.key});
