@@ -1,7 +1,1 @@
 include: package:yumemi_lints/flutter/3.32/recommended.yaml
-
-analyzer:
-  errors:
-    cast_nullable_to_non_nullable: ignore
-  exclude:
-    - "**/*.g.dart"
