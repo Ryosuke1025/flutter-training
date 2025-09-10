@@ -7,7 +7,9 @@ import 'package:flutter_training/ui/providers/weather_providers.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
 import 'mock/yumemi_weather_with_failure.dart';
+import 'mock/yumemi_weather_with_invalid_date.dart';
 import 'mock/yumemi_weather_with_success.dart';
+import 'mock/yumemi_weather_with_unknown_condition.dart';
 
 ProviderContainer _makeContainerWith(YumemiWeather client) {
   return ProviderContainer(
@@ -66,7 +68,35 @@ void _runFailureFlow() {
   expect(state2.error, isNull);
 }
 
+void _runUnknownConditionFlow() {
+  final container = _makeContainerWith(YumemiWeatherWithUnknownCondition());
+  container
+      .read(weatherActionsProvider)
+      .updateWeather(area: 'tokyo', date: DateTime.utc(2024));
+  final state = container.read(weatherStateProvider);
+  expect(state.error, YumemiWeatherError.unknown);
+  expect(state.weather, isNull);
+}
+
+void _runInvalidDateFlow() {
+  final container = _makeContainerWith(YumemiWeatherWithInvalidDate());
+  container
+      .read(weatherActionsProvider)
+      .updateWeather(area: 'tokyo', date: DateTime.utc(2024));
+  final state = container.read(weatherStateProvider);
+  expect(state.error, YumemiWeatherError.unknown);
+  expect(state.weather, isNull);
+}
+
 void main() {
   test('success: WeatherScreen reflects fetched values', _runSuccessFlow);
   test('failure: service sets error and clearError clears it', _runFailureFlow);
+  test(
+    'failure: decode unknown weather_condition maps to unknown error',
+    _runUnknownConditionFlow,
+  );
+  test(
+    'failure: decode invalid date maps to unknown error',
+    _runInvalidDateFlow,
+  );
 }
