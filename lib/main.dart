@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_training/core/bootstrap/install_error_listener.dart';
-import 'package:flutter_training/core/di/overrides.dart';
 import 'package:flutter_training/ui/widgets/green_widget.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
   runApp(
-    ProviderScope(
-      overrides: overrides,
-      child: const MainApp(),
+    const ProviderScope(
+      child: MainApp(),
     ),
   );
 }

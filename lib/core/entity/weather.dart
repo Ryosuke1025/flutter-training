@@ -1,4 +1,4 @@
-import 'package:flutter_training/services/entity/weather_condition.dart';
+import 'package:flutter_training/core/entity/weather_condition.dart';
 
 class Weather {
   const Weather({

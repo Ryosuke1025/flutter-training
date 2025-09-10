@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_training/ui/providers/weather_providers.dart';
+import 'package:flutter_training/ui/providers/weather_state_provider.dart';
 import 'package:flutter_training/ui/widgets/weather_condition_widget.dart';
 import 'package:flutter_training/ui/widgets/weather_temperature_widget.dart';
 
@@ -73,7 +73,7 @@ class WeatherScreen extends ConsumerWidget {
 
   void _onPressedReloadButton(WidgetRef ref) {
     ref
-        .read(weatherActionsProvider)
+        .read(weatherStateProvider.notifier)
         .updateWeather(area: 'tokyo', date: DateTime.now());
   }
 }

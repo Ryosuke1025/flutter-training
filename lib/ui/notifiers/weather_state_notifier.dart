@@ -1,34 +1,41 @@
 import 'dart:convert';
 import 'dart:developer';
+
 import 'package:collection/collection.dart';
-import 'package:flutter_training/services/entity/weather.dart';
-import 'package:flutter_training/services/entity/weather_condition.dart';
-import 'package:flutter_training/services/request/weather_get_request.dart';
-import 'package:flutter_training/services/response/weather_get_response.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_training/core/entity/weather.dart';
+import 'package:flutter_training/core/entity/weather_condition.dart';
+import 'package:flutter_training/core/request/weather_get_request.dart';
+import 'package:flutter_training/core/response/weather_get_response.dart';
+import 'package:flutter_training/ui/providers/yumemi_weather_client_provider.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
-class WeatherService {
-  WeatherService({required this.setWeather, required this.setError});
+class WeatherStateNotifier extends AutoDisposeNotifier<WeatherState> {
+  WeatherStateNotifier();
 
-  final _weather = YumemiWeather();
-  final void Function(Weather) setWeather;
-  final void Function(YumemiWeatherError?) setError;
+  late final YumemiWeather yumemiWeatherClient;
+
+  @override
+  WeatherState build() {
+    yumemiWeatherClient = ref.read(yumemiWeatherClientProvider);
+    return const WeatherState();
+  }
 
   void updateWeather({
     required String area,
     required DateTime date,
   }) {
     try {
-      final weather = _fetchWeather(area: area, date: date);
-      setWeather(weather);
+      final fetchedWeather = _fetchWeather(area: area, date: date);
+      _setWeather(fetchedWeather);
     } on YumemiWeatherError catch (error, stackTrace) {
-      setError(error);
+      _setError(error);
       log('Failed to fetchWeather.', error: error, stackTrace: stackTrace);
     }
   }
 
   void clearError() {
-    setError(null);
+    _setError(null);
   }
 
   Weather _fetchWeather({
@@ -38,7 +45,7 @@ class WeatherService {
     try {
       final request = WeatherGetRequest(area: area, date: date);
       final jsonString = jsonEncode(request.toJson());
-      final responseJsonString = _weather.fetchWeather(jsonString);
+      final responseJsonString = yumemiWeatherClient.fetchWeather(jsonString);
       final response = WeatherGetResponse.fromJson(
         jsonDecode(responseJsonString) as Map<String, dynamic>,
       );
@@ -68,4 +75,25 @@ class WeatherService {
       throw YumemiWeatherError.unknown;
     }
   }
+
+  void _setWeather(Weather weather) {
+    state = state.copyWith(weather: weather);
+  }
+
+  void _setError(YumemiWeatherError? error) {
+    state = state.copyWith(error: error);
+  }
+}
+
+class WeatherState {
+  const WeatherState({this.weather, this.error});
+
+  final Weather? weather;
+  final YumemiWeatherError? error;
+
+  WeatherState copyWith({Weather? weather, YumemiWeatherError? error}) =>
+      WeatherState(
+        weather: weather,
+        error: error,
+      );
 }

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_training/ui/extension/yumemi_weather_error_extension.dart';
-import 'package:flutter_training/ui/providers/weather_providers.dart';
+import 'package:flutter_training/ui/providers/weather_state_provider.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
 void installErrorListener(
@@ -40,7 +40,7 @@ Future<void> _showErrorDialog(
             TextButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop();
-                ref.read(weatherActionsProvider).clearError();
+                ref.read(weatherStateProvider.notifier).clearError();
               },
               child: const Text('OK'),
             ),

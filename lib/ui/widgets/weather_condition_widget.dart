@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_training/services/entity/weather_condition.dart';
+import 'package:flutter_training/core/entity/weather_condition.dart';
 import 'package:flutter_training/ui/extension/weather_condition_ui_extension.dart';
 
 class WeatherConditionWidget extends StatelessWidget {
