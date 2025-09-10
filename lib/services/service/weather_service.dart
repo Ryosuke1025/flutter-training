@@ -16,9 +16,11 @@ class WeatherService {
   }) {
     try {
       final request = WeatherGetRequest(area: area, date: date);
-      final jsonString = jsonEncode(request.toMap());
+      final jsonString = jsonEncode(request.toJson());
       final responseJsonString = _weather.fetchWeather(jsonString);
-      final response = WeatherGetResponse.fromJsonString(responseJsonString);
+      final response = WeatherGetResponse.fromJson(
+        jsonDecode(responseJsonString) as Map<String, dynamic>,
+      );
       final weatherCondition = WeatherCondition.values.firstWhereOrNull(
         (e) => e.name == response.weatherCondition,
       );
@@ -37,7 +39,7 @@ class WeatherService {
     } on YumemiWeatherError catch (error, stackTrace) {
       log('Failed to fetchWeather.', error: error, stackTrace: stackTrace);
       rethrow;
-    } on FormatException catch (error, stackTrace) {
+    } on Exception catch (error, stackTrace) {
       log('Failed to fetchWeather.', error: error, stackTrace: stackTrace);
       // Jsonのパースに失敗した場合は、YumemiWeatherError.unknownをthrowする
       // ignore: only_throw_errors
