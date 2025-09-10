@@ -6,8 +6,7 @@ List<Override> overrides = [
   weatherActionsProvider.overrideWith((ref) {
     final service = ref.watch(weatherServiceProvider);
     return WeatherActions(
-      updateWeather: ({required area, required date}) async =>
-          service.updateWeather(area: area, date: date),
+      updateWeather: service.updateWeather,
       clearError: service.clearError,
     );
   }),

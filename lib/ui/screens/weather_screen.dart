@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_training/ui/providers/weather_providers.dart';
@@ -73,10 +72,8 @@ class WeatherScreen extends ConsumerWidget {
   }
 
   void _onPressedReloadButton(WidgetRef ref) {
-    unawaited(
-      ref
-          .read(weatherActionsProvider)
-          .updateWeather(area: 'tokyo', date: DateTime.now()),
-    );
+    ref
+        .read(weatherActionsProvider)
+        .updateWeather(area: 'tokyo', date: DateTime.now());
   }
 }

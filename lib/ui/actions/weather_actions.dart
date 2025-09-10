@@ -1,7 +1,7 @@
 class WeatherActions {
   const WeatherActions({required this.updateWeather, required this.clearError});
 
-  final Future<void> Function({
+  final void Function({
     required String area,
     required DateTime date,
   })
