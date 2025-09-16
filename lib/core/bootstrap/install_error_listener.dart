@@ -18,8 +18,8 @@ void installErrorListener(
     if (currentContext == null || next == null || identical(prev, next)) {
       return;
     }
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      unawaited(_showErrorDialog(currentContext, next, ref));
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _showErrorDialog(currentContext, next, ref);
     });
   });
 }
