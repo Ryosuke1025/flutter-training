@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_training/ui/providers/weather_state_provider.dart';
+import 'package:flutter_training/ui/providers/weather_state_notifier_provider.dart';
 import 'package:flutter_training/ui/widgets/weather_condition_widget.dart';
 import 'package:flutter_training/ui/widgets/weather_temperature_widget.dart';
 
@@ -9,7 +9,7 @@ class WeatherScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(weatherStateProvider);
+    final state = ref.watch(weatherStateNotifierProvider);
     return Scaffold(
       body: Center(
         child: FractionallySizedBox(
@@ -73,7 +73,7 @@ class WeatherScreen extends ConsumerWidget {
 
   void _onPressedReloadButton(WidgetRef ref) {
     ref
-        .read(weatherStateProvider.notifier)
+        .read(weatherStateNotifierProvider.notifier)
         .updateWeather(area: 'tokyo', date: DateTime.now());
   }
 }
