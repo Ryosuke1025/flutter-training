@@ -6,7 +6,7 @@ flowchart TD
   end
 
   subgraph State Management
-    S[weatherStateProvider]
+    S[weatherStateNotifierProvider]
     WN[WeatherStateNotifier]
     ST[WeatherState]
   end
@@ -77,7 +77,7 @@ sequenceDiagram
 | `WeatherTemperatureWidget` | 最高・最低気温の表示 |
 | `GreenWidget` | 初期(緑)画面を表示し、遅延後に`WeatherScreen`に遷移|
 | **UI/Providers** |
-| `weatherStateProvider` | `WeatherStateNotifier`と`WeatherState`の提供 |
+| `weatherStateNotifierProvider` | `WeatherStateNotifier`と`WeatherState`の提供 |
 | `yumemiWeatherClientProvider` | `YumemiWeather`のDI提供 |
 | **UI/Notifiers** |
 | `WeatherStateNotifier` | 天気情報の取得・状態更新・エラーハンドリング |
