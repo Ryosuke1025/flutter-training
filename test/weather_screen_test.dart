@@ -36,7 +36,7 @@ Future<ProviderContainer> _pumpMainAppWithMockNotifier(
   );
 
   // GreenWidgetから500ms後にWeatherScreenに自動遷移するのを待つ
-  await tester.pumpAndSettle(const Duration(seconds: 1));
+  await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
   return container;
 }
