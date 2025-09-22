@@ -31,7 +31,10 @@ void _runSuccessFlow() {
   // 取得実行
   container
       .read(weatherStateNotifierProvider.notifier)
-      .updateWeather(area: 'tokyo', date: DateTime.now());
+      .updateWeather(
+        area: 'tokyo',
+        date: DateTime.parse('2024-01-01T00:00:00Z'),
+      );
 
   // state を検証
   final state = container.read(weatherStateNotifierProvider);
