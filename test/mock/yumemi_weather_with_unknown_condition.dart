@@ -1,6 +1,6 @@
 import 'package:yumemi_weather/yumemi_weather.dart';
 
-class YumemiWeatherWithUnknownCondition extends YumemiWeather {
+final class YumemiWeatherWithUnknownCondition extends YumemiWeather {
   @override
   String fetchWeather(String requestJson) =>
       '{\n'
