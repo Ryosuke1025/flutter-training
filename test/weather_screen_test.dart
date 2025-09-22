@@ -24,8 +24,14 @@ Future<ProviderContainer> _pumpMainAppWithMockNotifier(
     ],
   );
 
+  // 適切な画面サイズを設定してレイアウトオーバーフローを防ぐ
   tester.view.physicalSize = const Size(1200, 2400);
   tester.view.devicePixelRatio = 1.0;
+
+  addTearDown(() {
+    container.dispose();
+    tester.view.reset();
+  });
 
   // MainAppを起動
   await tester.pumpWidget(
