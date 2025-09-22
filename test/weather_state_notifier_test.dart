@@ -13,7 +13,7 @@ import 'mock/yumemi_weather_with_unknown_condition.dart';
 ProviderContainer _makeContainerWith(YumemiWeather client) {
   return ProviderContainer(
     overrides: [
-      yumemiWeatherClientProvider.overrideWith((_) => client),
+      yumemiWeatherClientProvider.overrideWithValue(client),
     ],
   );
 }
@@ -82,7 +82,7 @@ void _runInvalidDateFlow() {
 
 void main() {
   test('success: WeatherScreen reflects fetched values', _runSuccessFlow);
-  test('failure: service sets error and clearError clears it', _runFailureFlow);
+  test('failure: sets error and clearError clears it', _runFailureFlow);
   test(
     'failure: decode unknown weather_condition maps to unknown error',
     _runUnknownConditionFlow,
