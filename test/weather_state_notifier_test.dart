@@ -55,14 +55,14 @@ void _runFailureFlow() {
       .updateWeather(area: 'tokyo', date: DateTime.now());
 
   // stateを検証
-  final state1 = container.read(weatherStateNotifierProvider);
-  expect(state1.error, YumemiWeatherError.invalidParameter);
-  expect(state1.weather, isNull);
+  final resultState = container.read(weatherStateNotifierProvider);
+  expect(resultState.error, YumemiWeatherError.invalidParameter);
+  expect(resultState.weather, isNull);
 
   // エラーをクリアした後stateを検証
   container.read(weatherStateNotifierProvider.notifier).clearError();
-  final state2 = container.read(weatherStateNotifierProvider);
-  expect(state2.error, isNull);
+  final clearedState = container.read(weatherStateNotifierProvider);
+  expect(clearedState.error, isNull);
 }
 
 void _runUnknownConditionFlow() {
