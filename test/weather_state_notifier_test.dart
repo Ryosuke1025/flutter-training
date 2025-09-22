@@ -11,11 +11,13 @@ import 'mock/yumemi_weather_with_success.dart';
 import 'mock/yumemi_weather_with_unknown_condition.dart';
 
 ProviderContainer _makeContainerWith(YumemiWeather client) {
-  return ProviderContainer(
+  final container = ProviderContainer(
     overrides: [
       yumemiWeatherClientProvider.overrideWithValue(client),
     ],
   );
+  addTearDown(container.dispose);
+  return container;
 }
 
 void _runSuccessFlow() {
