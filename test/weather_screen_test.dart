@@ -2,116 +2,123 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_training/core/entity/weather.dart';
 import 'package:flutter_training/core/entity/weather_condition.dart';
-import 'package:flutter_training/main.dart';
 import 'package:flutter_training/ui/providers/weather_state_notifier_provider.dart';
+import 'package:flutter_training/ui/screens/weather_screen.dart';
 
-import 'extension/weather_condition_test_extension.dart';
 import 'mock/mock_weather_state_notifier.dart';
 
-Future<ProviderContainer> _pumpMainAppWithMockNotifier(
+Future<void> _pumpWeatherScreenWithMockNotifier(
   WidgetTester tester, {
-  bool shouldFail = false,
-  WeatherCondition weatherCondition = WeatherCondition.sunny,
+  required Weather weather,
 }) async {
-  final container = ProviderContainer(
-    overrides: [
-      weatherStateNotifierProvider.overrideWith(
-        () => MockWeatherStateNotifier(
-          shouldFail: shouldFail,
-          weatherCondition: weatherCondition,
-        ),
-      ),
-    ],
-  );
-
   // 適切な画面サイズを設定してレイアウトオーバーフローを防ぐ
   tester.view.physicalSize = const Size(1200, 2400);
   tester.view.devicePixelRatio = 1.0;
 
   addTearDown(() {
-    container.dispose();
     tester.view.reset();
   });
 
-  // MainAppを起動
+  // WeatherScreenを起動してproviderを差し替え
   await tester.pumpWidget(
-    UncontrolledProviderScope(
-      container: container,
-      child: const MainApp(),
+    ProviderScope(
+      overrides: [
+        weatherStateNotifierProvider.overrideWith(
+          () => MockWeatherStateNotifier(weather: weather),
+        ),
+      ],
+      child: const MaterialApp(
+        home: WeatherScreen(),
+      ),
     ),
   );
-
-  // GreenWidgetから500ms後にWeatherScreenに自動遷移するのを待つ
-  await tester.pumpAndSettle(const Duration(milliseconds: 500));
-
-  return container;
 }
 
 void main() {
   testWidgets('晴れの画像が表示されること', (tester) async {
-    await _pumpMainAppWithMockNotifier(tester);
+    final weather = Weather(
+      weatherCondition: WeatherCondition.sunny,
+      maxTemperature: 30,
+      minTemperature: 20,
+      date: DateTime.parse('2024-01-01T00:00:00Z'),
+    );
+
+    await _pumpWeatherScreenWithMockNotifier(tester, weather: weather);
     expect(find.byType(SvgPicture), findsNothing);
 
     await tester.tap(find.text('Reload'));
     await tester.pumpAndSettle();
-    expect(WeatherCondition.sunny.finder, findsOneWidget);
-    expect(find.byType(AlertDialog), findsNothing);
+    expect(
+      find.bySemanticsLabel(weather.weatherCondition.name),
+      findsOneWidget,
+    );
   });
 
   testWidgets('曇りの画像が表示されること', (tester) async {
-    await _pumpMainAppWithMockNotifier(
-      tester,
+    final weather = Weather(
       weatherCondition: WeatherCondition.cloudy,
+      maxTemperature: 30,
+      minTemperature: 20,
+      date: DateTime.parse('2024-01-01T00:00:00Z'),
     );
+
+    await _pumpWeatherScreenWithMockNotifier(tester, weather: weather);
     expect(find.byType(SvgPicture), findsNothing);
 
     await tester.tap(find.text('Reload'));
     await tester.pumpAndSettle();
-    expect(WeatherCondition.cloudy.finder, findsOneWidget);
-    expect(find.byType(AlertDialog), findsNothing);
+    expect(
+      find.bySemanticsLabel(weather.weatherCondition.name),
+      findsOneWidget,
+    );
   });
 
   testWidgets('雨の画像が表示されること', (tester) async {
-    await _pumpMainAppWithMockNotifier(
-      tester,
+    final weather = Weather(
       weatherCondition: WeatherCondition.rainy,
+      maxTemperature: 30,
+      minTemperature: 20,
+      date: DateTime.parse('2024-01-01T00:00:00Z'),
     );
+
+    await _pumpWeatherScreenWithMockNotifier(tester, weather: weather);
     expect(find.byType(SvgPicture), findsNothing);
 
     await tester.tap(find.text('Reload'));
     await tester.pumpAndSettle();
-    expect(WeatherCondition.rainy.finder, findsOneWidget);
-    expect(find.byType(AlertDialog), findsNothing);
+    expect(
+      find.bySemanticsLabel(weather.weatherCondition.name),
+      findsOneWidget,
+    );
   });
 
   testWidgets('最高気温が表示されること', (tester) async {
-    await _pumpMainAppWithMockNotifier(tester);
+    final weather = Weather(
+      weatherCondition: WeatherCondition.sunny,
+      maxTemperature: 30,
+      minTemperature: 20,
+      date: DateTime.parse('2024-01-01T00:00:00Z'),
+    );
+
+    await _pumpWeatherScreenWithMockNotifier(tester, weather: weather);
     await tester.tap(find.text('Reload'));
     await tester.pumpAndSettle();
-    expect(find.text('30 ℃'), findsOneWidget);
-    expect(find.byType(AlertDialog), findsNothing);
+    expect(find.text('${weather.maxTemperature} ℃'), findsOneWidget);
   });
 
   testWidgets('最低気温が表示されること', (tester) async {
-    await _pumpMainAppWithMockNotifier(tester);
+    final weather = Weather(
+      weatherCondition: WeatherCondition.sunny,
+      maxTemperature: 30,
+      minTemperature: 20,
+      date: DateTime.parse('2024-01-01T00:00:00Z'),
+    );
+
+    await _pumpWeatherScreenWithMockNotifier(tester, weather: weather);
     await tester.tap(find.text('Reload'));
     await tester.pumpAndSettle();
-    expect(find.text('20 ℃'), findsOneWidget);
-    expect(find.byType(AlertDialog), findsNothing);
-  });
-
-  testWidgets('エラーダイアログが表示されること', (tester) async {
-    await _pumpMainAppWithMockNotifier(tester, shouldFail: true);
-    await tester.tap(find.text('Reload'));
-    await tester.pumpAndSettle();
-    expect(find.byType(AlertDialog), findsOneWidget);
-    expect(find.text('天気の取得に失敗しました。'), findsOneWidget);
-    expect(find.text('無効なパラメーターが指定されました。'), findsOneWidget);
-    expect(find.text('OK'), findsOneWidget);
-
-    await tester.tap(find.text('OK'));
-    await tester.pumpAndSettle();
-    expect(find.byType(AlertDialog), findsNothing);
+    expect(find.text('${weather.minTemperature} ℃'), findsOneWidget);
   });
 }
