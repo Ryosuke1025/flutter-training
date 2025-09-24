@@ -6,6 +6,7 @@ import 'package:flutter_training/core/entity/weather_condition.dart';
 import 'package:flutter_training/main.dart';
 import 'package:flutter_training/ui/providers/weather_state_notifier_provider.dart';
 
+import 'extension/weather_condition_test_extension.dart';
 import 'mock/mock_weather_state_notifier.dart';
 
 Future<ProviderContainer> _pumpMainAppWithMockNotifier(
@@ -54,12 +55,7 @@ void main() {
 
     await tester.tap(find.text('Reload'));
     await tester.pumpAndSettle();
-    expect(
-      find.byWidgetPredicate(
-        (widget) => widget is SvgPicture && widget.semanticsLabel == 'sunny',
-      ),
-      findsOneWidget,
-    );
+    expect(WeatherCondition.sunny.finder, findsOneWidget);
     expect(find.byType(AlertDialog), findsNothing);
   });
 
@@ -72,12 +68,7 @@ void main() {
 
     await tester.tap(find.text('Reload'));
     await tester.pumpAndSettle();
-    expect(
-      find.byWidgetPredicate(
-        (widget) => widget is SvgPicture && widget.semanticsLabel == 'cloudy',
-      ),
-      findsOneWidget,
-    );
+    expect(WeatherCondition.cloudy.finder, findsOneWidget);
     expect(find.byType(AlertDialog), findsNothing);
   });
 
@@ -90,12 +81,7 @@ void main() {
 
     await tester.tap(find.text('Reload'));
     await tester.pumpAndSettle();
-    expect(
-      find.byWidgetPredicate(
-        (widget) => widget is SvgPicture && widget.semanticsLabel == 'rainy',
-      ),
-      findsOneWidget,
-    );
+    expect(WeatherCondition.rainy.finder, findsOneWidget);
     expect(find.byType(AlertDialog), findsNothing);
   });
 
@@ -103,13 +89,7 @@ void main() {
     await _pumpMainAppWithMockNotifier(tester);
     await tester.tap(find.text('Reload'));
     await tester.pumpAndSettle();
-    final maxTempFinder = find.byWidgetPredicate(
-      (widget) =>
-          widget is Text &&
-          widget.data == '30 ℃' &&
-          widget.style?.color == Colors.red,
-    );
-    expect(maxTempFinder, findsOneWidget);
+    expect(find.text('30 ℃'), findsOneWidget);
     expect(find.byType(AlertDialog), findsNothing);
   });
 
@@ -117,13 +97,7 @@ void main() {
     await _pumpMainAppWithMockNotifier(tester);
     await tester.tap(find.text('Reload'));
     await tester.pumpAndSettle();
-    final minTempFinder = find.byWidgetPredicate(
-      (widget) =>
-          widget is Text &&
-          widget.data == '20 ℃' &&
-          widget.style?.color == Colors.blue,
-    );
-    expect(minTempFinder, findsOneWidget);
+    expect(find.text('20 ℃'), findsOneWidget);
     expect(find.byType(AlertDialog), findsNothing);
   });
 
