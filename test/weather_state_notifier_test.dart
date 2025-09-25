@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_training/core/entity/weather_condition.dart';
+import 'package:flutter_training/ui/providers/weather_fetch_entry_provider.dart';
 import 'package:flutter_training/ui/providers/weather_state_notifier_provider.dart';
 import 'package:flutter_training/ui/providers/yumemi_weather_client_provider.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
@@ -20,7 +21,7 @@ ProviderContainer _makeContainerWith(YumemiWeather client) {
   return container;
 }
 
-void _runSuccessFlow() {
+Future<void> _runSuccessFlow() async {
   final container = _makeContainerWith(YumemiWeatherWithSuccess());
 
   // 初期 state を検証
@@ -29,7 +30,7 @@ void _runSuccessFlow() {
   expect(initial.error, isNull);
 
   // 取得実行
-  container
+  await container
       .read(weatherStateNotifierProvider.notifier)
       .updateWeather(
         area: 'tokyo',
@@ -46,11 +47,11 @@ void _runSuccessFlow() {
   expect(state.weather!.date, DateTime.parse('2024-01-01T00:00:00Z'));
 }
 
-void _runFailureFlow() {
+Future<void> _runFailureFlow() async {
   final container = _makeContainerWith(YumemiWeatherWithFailure());
 
   // 取得実行
-  container
+  await container
       .read(weatherStateNotifierProvider.notifier)
       .updateWeather(area: 'tokyo', date: DateTime.now());
 
@@ -65,9 +66,9 @@ void _runFailureFlow() {
   expect(clearedState.error, isNull);
 }
 
-void _runUnknownConditionFlow() {
+Future<void> _runUnknownConditionFlow() async {
   final container = _makeContainerWith(YumemiWeatherWithUnknownCondition());
-  container
+  await container
       .read(weatherStateNotifierProvider.notifier)
       .updateWeather(area: 'tokyo', date: DateTime.utc(2024));
   final state = container.read(weatherStateNotifierProvider);
@@ -75,9 +76,9 @@ void _runUnknownConditionFlow() {
   expect(state.weather, isNull);
 }
 
-void _runInvalidDateFlow() {
+Future<void> _runInvalidDateFlow() async {
   final container = _makeContainerWith(YumemiWeatherWithInvalidDate());
-  container
+  await container
       .read(weatherStateNotifierProvider.notifier)
       .updateWeather(area: 'tokyo', date: DateTime.utc(2024));
   final state = container.read(weatherStateNotifierProvider);

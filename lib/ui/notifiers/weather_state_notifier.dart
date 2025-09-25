@@ -7,26 +7,27 @@ import 'package:flutter_training/core/entity/weather.dart';
 import 'package:flutter_training/core/entity/weather_condition.dart';
 import 'package:flutter_training/core/request/weather_get_request.dart';
 import 'package:flutter_training/core/response/weather_get_response.dart';
-import 'package:flutter_training/ui/providers/yumemi_weather_client_provider.dart';
+import 'package:flutter_training/ui/providers/weather_fetch_entry_provider.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
 class WeatherStateNotifier extends AutoDisposeNotifier<WeatherState> {
   WeatherStateNotifier();
 
-  late final YumemiWeather yumemiWeatherClient;
-
   @override
   WeatherState build() {
-    yumemiWeatherClient = ref.read(yumemiWeatherClientProvider);
     return const WeatherState();
   }
 
-  void updateWeather({
+  Future<void> updateWeather({
     required String area,
     required DateTime date,
-  }) {
+  }) async {
+    _setLoading(true);
     try {
-      final fetchedWeather = _fetchWeather(area: area, date: date);
+      final fetchedWeather = await _fetchWeather(
+        area: area,
+        date: date,
+      );
       _setWeather(fetchedWeather);
     } on YumemiWeatherError catch (error, stackTrace) {
       _setError(error);
@@ -38,14 +39,15 @@ class WeatherStateNotifier extends AutoDisposeNotifier<WeatherState> {
     _setError(null);
   }
 
-  Weather _fetchWeather({
+  Future<Weather> _fetchWeather({
     required String area,
     required DateTime date,
-  }) {
+  }) async {
     try {
       final request = WeatherGetRequest(area: area, date: date);
       final jsonString = jsonEncode(request.toJson());
-      final responseJsonString = yumemiWeatherClient.fetchWeather(jsonString);
+      final fetchEntry = ref.read(weatherSyncFetchProvider);
+      final responseJsonString = await fetchEntry(jsonString);
       final response = WeatherGetResponse.fromJson(
         jsonDecode(responseJsonString) as Map<String, dynamic>,
       );
@@ -77,23 +79,32 @@ class WeatherStateNotifier extends AutoDisposeNotifier<WeatherState> {
   }
 
   void _setWeather(Weather weather) {
-    state = state.copyWith(weather: weather);
+    state = state.copyWith(weather: weather, isLoading: false);
   }
 
   void _setError(YumemiWeatherError? error) {
-    state = state.copyWith(error: error);
+    state = state.copyWith(error: error, isLoading: false);
+  }
+
+  void _setLoading(bool isLoading) {
+    state = state.copyWith(isLoading: isLoading);
   }
 }
 
 class WeatherState {
-  const WeatherState({this.weather, this.error});
+  const WeatherState({this.weather, this.error, this.isLoading = false});
 
   final Weather? weather;
   final YumemiWeatherError? error;
+  final bool isLoading;
 
-  WeatherState copyWith({Weather? weather, YumemiWeatherError? error}) =>
-      WeatherState(
-        weather: weather,
-        error: error,
-      );
+  WeatherState copyWith({
+    Weather? weather,
+    YumemiWeatherError? error,
+    bool? isLoading,
+  }) => WeatherState(
+    weather: weather ?? this.weather,
+    error: error,
+    isLoading: isLoading ?? this.isLoading,
+  );
 }

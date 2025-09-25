@@ -15,7 +15,10 @@ class MockWeatherStateNotifier extends WeatherStateNotifier {
   WeatherState build() => const WeatherState();
 
   @override
-  void updateWeather({required String area, required DateTime date}) {
+  Future<void> updateWeather({
+    required String area,
+    required DateTime date,
+  }) async {
     if (error != null) {
       state = WeatherState(error: error);
     } else if (weather != null) {
