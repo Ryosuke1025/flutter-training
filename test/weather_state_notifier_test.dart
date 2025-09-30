@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_training/core/entity/weather_condition.dart';
-import 'package:flutter_training/ui/providers/weather_fetch_entry_provider.dart';
+import 'package:flutter_training/core/providers/weather_fetch_entry_provider.dart';
+import 'package:flutter_training/core/providers/yumemi_weather_client_provider.dart';
 import 'package:flutter_training/ui/providers/weather_state_notifier_provider.dart';
-import 'package:flutter_training/ui/providers/yumemi_weather_client_provider.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
 import 'mock/yumemi_weather_with_failure.dart';

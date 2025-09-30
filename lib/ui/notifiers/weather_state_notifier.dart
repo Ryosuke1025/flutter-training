@@ -5,9 +5,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_training/core/entity/weather.dart';
 import 'package:flutter_training/core/entity/weather_condition.dart';
+import 'package:flutter_training/core/providers/weather_fetch_entry_provider.dart';
 import 'package:flutter_training/core/request/weather_get_request.dart';
 import 'package:flutter_training/core/response/weather_get_response.dart';
-import 'package:flutter_training/ui/providers/weather_fetch_entry_provider.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
 
 class WeatherStateNotifier extends AutoDisposeNotifier<WeatherState> {
