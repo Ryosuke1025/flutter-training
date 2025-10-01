@@ -11,11 +11,13 @@ import 'mock/yumemi_weather_with_success.dart';
 import 'mock/yumemi_weather_with_unknown_condition.dart';
 
 ProviderContainer _makeContainerWith(YumemiWeather client) {
-  return ProviderContainer(
+  final container = ProviderContainer(
     overrides: [
-      yumemiWeatherClientProvider.overrideWith((_) => client),
+      yumemiWeatherClientProvider.overrideWithValue(client),
     ],
   );
+  addTearDown(container.dispose);
+  return container;
 }
 
 void _runSuccessFlow() {
@@ -29,7 +31,10 @@ void _runSuccessFlow() {
   // 取得実行
   container
       .read(weatherStateNotifierProvider.notifier)
-      .updateWeather(area: 'tokyo', date: DateTime.now());
+      .updateWeather(
+        area: 'tokyo',
+        date: DateTime.parse('2024-01-01T00:00:00Z'),
+      );
 
   // state を検証
   final state = container.read(weatherStateNotifierProvider);
@@ -50,14 +55,14 @@ void _runFailureFlow() {
       .updateWeather(area: 'tokyo', date: DateTime.now());
 
   // stateを検証
-  final state1 = container.read(weatherStateNotifierProvider);
-  expect(state1.error, YumemiWeatherError.invalidParameter);
-  expect(state1.weather, isNull);
+  final resultState = container.read(weatherStateNotifierProvider);
+  expect(resultState.error, YumemiWeatherError.invalidParameter);
+  expect(resultState.weather, isNull);
 
   // エラーをクリアした後stateを検証
   container.read(weatherStateNotifierProvider.notifier).clearError();
-  final state2 = container.read(weatherStateNotifierProvider);
-  expect(state2.error, isNull);
+  final clearedState = container.read(weatherStateNotifierProvider);
+  expect(clearedState.error, isNull);
 }
 
 void _runUnknownConditionFlow() {
@@ -82,7 +87,7 @@ void _runInvalidDateFlow() {
 
 void main() {
   test('success: WeatherScreen reflects fetched values', _runSuccessFlow);
-  test('failure: service sets error and clearError clears it', _runFailureFlow);
+  test('failure: sets error and clearError clears it', _runFailureFlow);
   test(
     'failure: decode unknown weather_condition maps to unknown error',
     _runUnknownConditionFlow,
