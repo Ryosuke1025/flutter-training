@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_training/core/entity/weather_condition.dart';
-import 'package:flutter_training/core/providers/weather_sync_fetch_provider.dart';
 import 'package:flutter_training/core/providers/yumemi_weather_client_provider.dart';
 import 'package:flutter_training/ui/providers/weather_state_notifier_provider.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
@@ -23,9 +22,10 @@ ProviderContainer _makeContainerWith(YumemiWeather client) {
 
 Future<void> _runSuccessFlow() async {
   final container = _makeContainerWith(YumemiWeatherWithSuccess());
+  final listener = container.listen(weatherStateNotifierProvider, (_, _) {});
 
   // 初期 state を検証
-  final initial = container.read(weatherStateNotifierProvider);
+  final initial = listener.read();
   expect(initial.weather, isNull);
   expect(initial.error, isNull);
 
@@ -38,7 +38,7 @@ Future<void> _runSuccessFlow() async {
       );
 
   // state を検証
-  final state = container.read(weatherStateNotifierProvider);
+  final state = listener.read();
   expect(state.error, isNull);
   expect(state.weather, isNotNull);
   expect(state.weather!.weatherCondition, WeatherCondition.sunny);
@@ -49,6 +49,7 @@ Future<void> _runSuccessFlow() async {
 
 Future<void> _runFailureFlow() async {
   final container = _makeContainerWith(YumemiWeatherWithFailure());
+  final listener = container.listen(weatherStateNotifierProvider, (_, _) {});
 
   // 取得実行
   await container
@@ -68,20 +69,22 @@ Future<void> _runFailureFlow() async {
 
 Future<void> _runUnknownConditionFlow() async {
   final container = _makeContainerWith(YumemiWeatherWithUnknownCondition());
+  final listener = container.listen(weatherStateNotifierProvider, (_, _) {});
   await container
       .read(weatherStateNotifierProvider.notifier)
       .updateWeather(area: 'tokyo', date: DateTime.utc(2024));
-  final state = container.read(weatherStateNotifierProvider);
+  final state = listener.read();
   expect(state.error, YumemiWeatherError.unknown);
   expect(state.weather, isNull);
 }
 
 Future<void> _runInvalidDateFlow() async {
   final container = _makeContainerWith(YumemiWeatherWithInvalidDate());
+  final listener = container.listen(weatherStateNotifierProvider, (_, _) {});
   await container
       .read(weatherStateNotifierProvider.notifier)
       .updateWeather(area: 'tokyo', date: DateTime.utc(2024));
-  final state = container.read(weatherStateNotifierProvider);
+  final state = listener.read();
   expect(state.error, YumemiWeatherError.unknown);
   expect(state.weather, isNull);
 }

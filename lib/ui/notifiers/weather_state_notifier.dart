@@ -2,10 +2,11 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_training/core/entity/weather.dart';
 import 'package:flutter_training/core/entity/weather_condition.dart';
-import 'package:flutter_training/core/providers/weather_sync_fetch_provider.dart';
+import 'package:flutter_training/core/providers/yumemi_weather_client_provider.dart';
 import 'package:flutter_training/core/request/weather_get_request.dart';
 import 'package:flutter_training/core/response/weather_get_response.dart';
 import 'package:yumemi_weather/yumemi_weather.dart';
@@ -46,8 +47,11 @@ class WeatherStateNotifier extends AutoDisposeNotifier<WeatherState> {
     try {
       final request = WeatherGetRequest(area: area, date: date);
       final jsonString = jsonEncode(request.toJson());
-      final fetchEntry = ref.read(weatherSyncFetchProvider);
-      final responseJsonString = await fetchEntry(jsonString);
+      final fetchEntry = ref.read(yumemiWeatherClientProvider);
+      final responseJsonString = await compute(
+        fetchEntry.syncFetchWeather,
+        jsonString,
+      );
       final response = WeatherGetResponse.fromJson(
         jsonDecode(responseJsonString) as Map<String, dynamic>,
       );
