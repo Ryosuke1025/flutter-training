@@ -2,7 +2,7 @@ import 'package:yumemi_weather/yumemi_weather.dart';
 
 final class YumemiWeatherWithUnknownCondition extends YumemiWeather {
   @override
-  String fetchWeather(String requestJson) =>
+  String syncFetchWeather(String requestJson) =>
       '{\n'
       '  "weather_condition": "stormy",\n'
       '  "max_temperature": 30,\n'

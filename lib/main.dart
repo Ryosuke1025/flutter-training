@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_training/core/bootstrap/install_error_listener.dart';
+import 'package:flutter_training/core/bootstrap/install_loading_listener.dart';
 import 'package:flutter_training/ui/widgets/green_widget.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
@@ -19,6 +20,7 @@ class MainApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     installErrorListener(ref, navigatorKey);
+    installLoadingListener(ref, navigatorKey);
     return MaterialApp(
       navigatorKey: navigatorKey,
       home: const GreenWidget(),

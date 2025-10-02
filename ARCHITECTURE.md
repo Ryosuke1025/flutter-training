@@ -38,15 +38,18 @@ sequenceDiagram
 
     U->>WS: Reloadボタン押下
     WS->>WN: updateWeather(area, date)
+    WN->>State: isLoading=true
+    Note over WS: グローバルローディングリスナーが<br/>オーバーレイ表示
     
     WN->>WN: _fetchWeather()
-    WN->>API: fetchWeather(jsonString)
+    WN->>API: compute(syncFetchWeather, jsonString)
     
     alt 成功時
         rect rgb(230, 255, 230)
             API-->>WN: JSON Response
             WN->>WN: JSON → Weather変換
-            WN->>State: weather更新
+            WN->>State: weather更新, isLoading=false
+            Note over WS: グローバルローディングリスナーが<br/>オーバーレイ非表示
             State-->>WS: 天気状態更新通知
             WS-->>U: UI更新（天気表示）
         end
@@ -58,7 +61,8 @@ sequenceDiagram
                 API-->>WN: JSON Response
                 WN->>WN: JSON → Weather変換失敗
             end
-            WN->>State: error更新
+            WN->>State: error更新, isLoading=false
+            Note over WS: グローバルローディングリスナーが<br/>オーバーレイ非表示
             State-->>WS: エラー状態更新通知
             Note over WS: グローバルエラーリスナーが<br/>ダイアログ表示
             WS-->>U: エラーダイアログ表示
@@ -80,8 +84,8 @@ sequenceDiagram
 | `weatherStateNotifierProvider` | `WeatherStateNotifier`と`WeatherState`の提供 |
 | `yumemiWeatherClientProvider` | `YumemiWeather`のDI提供 |
 | **UI/Notifiers** |
-| `WeatherStateNotifier` | 天気情報の取得・状態更新・エラーハンドリング |
-| `WeatherState` | 天気情報とエラー状態を保持する不変データクラス |
+| `WeatherStateNotifier` | 天気情報の取得・状態更新・エラーハンドリング（Isolate/compute使用） |
+| `WeatherState` | 天気情報・エラー状態・ローディング状態を保持する不変データクラス |
 | **Core/Entity** |
 | `Weather` | アプリ内部の天気データ |
 | `WeatherCondition` | 天気状態の列挙型 |
@@ -91,3 +95,4 @@ sequenceDiagram
 | `WeatherGetResponse` | APIレスポンスデータの構造化 |
 | **Core/Bootstrap** |
 | `install_error_listener.dart` | グローバルエラーリスナーの設定 |
+| `install_loading_listener.dart` | グローバルローディングオーバーレイの設定 |

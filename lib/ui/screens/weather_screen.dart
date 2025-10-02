@@ -71,8 +71,8 @@ class WeatherScreen extends ConsumerWidget {
     Navigator.pop(context);
   }
 
-  void _onPressedReloadButton(WidgetRef ref) {
-    ref
+  Future<void> _onPressedReloadButton(WidgetRef ref) async {
+    await ref
         .read(weatherStateNotifierProvider.notifier)
         .updateWeather(area: 'tokyo', date: DateTime.now());
   }
