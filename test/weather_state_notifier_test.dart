@@ -49,7 +49,7 @@ Future<void> _runSuccessFlow() async {
 
 Future<void> _runFailureFlow() async {
   final container = _makeContainerWith(YumemiWeatherWithFailure());
-  final listener = container.listen(weatherStateNotifierProvider, (_, _) {});
+  container.listen(weatherStateNotifierProvider, (_, _) {});
 
   // 取得実行
   await container
